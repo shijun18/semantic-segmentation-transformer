@@ -67,6 +67,13 @@ class SimpleNet(nn.Module):
         self.down2 = down(width[1], width[2], conv_builder, norm_layer)
         self.down3 = down(width[2], width[3], conv_builder, norm_layer)
         self.down4 = down(width[3], width[4], conv_builder, norm_layer)
+
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+            elif isinstance(m, (nn.BatchNorm2d, BatchNorm2d)):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
        
 
     def forward(self, x):

@@ -1,5 +1,5 @@
 import torch
-from backbone import resnet,swin_transformer,simplenet
+from encoder import resnet,swin_transformer,simplenet
 
 
 

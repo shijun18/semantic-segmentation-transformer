@@ -30,9 +30,9 @@ if __name__ == '__main__':
     import os 
     os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
-    # net = build_encoder('swin_transformer',n_channels=1)
+    net = build_encoder('swin_transformer',n_channels=1)
     # net = build_encoder('resnet18',n_channels=1)
-    net = build_encoder('simplenet',n_channels=1)
+    # net = build_encoder('simplenet',n_channels=1)
     net = net.cuda()
     net.train()
     input = torch.randn((1,1,512,512)).cuda()

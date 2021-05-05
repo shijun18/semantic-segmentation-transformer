@@ -196,6 +196,7 @@ class ResNet(nn.Module):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
+        out_x.append(x)
         x = self.maxpool(x)
 
         x_down0 = self.layer1(x)

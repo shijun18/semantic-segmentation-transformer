@@ -1,5 +1,5 @@
 import torch
-from encoder import resnet,swin_transformer,simplenet
+from model.encoder import resnet,swin_transformer,simplenet
 
 
 

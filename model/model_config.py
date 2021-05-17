@@ -9,7 +9,7 @@ MODEL_CONFIG = {
         'decoder_attention_type':None,
         'decoder_channels':[256,128,64,32], #[8,4,2,1]
         'upsampling':1,
-        'classes':1,
+        'classes':2,
         'aux_classifier': False,
     },
     'swin_trans_unet':{
@@ -22,7 +22,7 @@ MODEL_CONFIG = {
         'decoder_attention_type':None,
         'decoder_channels':[256,128,64], #[16,8,4]
         'upsampling':4,
-        'classes':1,
+        'classes':2,
         'aux_classifier': False,
     },
     'resnet18_unet':{
@@ -35,7 +35,7 @@ MODEL_CONFIG = {
         'decoder_attention_type':None,
         'decoder_channels':[256,128,64,32], #[16,8,4,2]
         'upsampling':2,
-        'classes':1,
+        'classes':2,
         'aux_classifier': False,
     }
 }

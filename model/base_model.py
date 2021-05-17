@@ -34,7 +34,7 @@ class SegmentationModel(torch.nn.Module):
         initialize_decoder(self.decoder)
         initialize_head(self.segmentation_head)
         if self.classification_head is not None:
-            init.initialize_head(self.classification_head)
+            initialize_head(self.classification_head)
 
     def forward(self, x):
         """Sequentially pass `x` trough model`s encoder, decoder and heads"""

@@ -1,11 +1,13 @@
-from typing import Optional, Union, List
+import sys
+sys.path.append('..')
 
 import torch.nn as nn
-from decoder.unet import UnetDecoder
-from get_encoder import build_encoder
-from base_model import SegmentationModel
-
-from lib import SynchronizedBatchNorm2d
+from typing import Optional, Union, List
+from model.model_config import MODEL_CONFIG
+from model.decoder.unet import UnetDecoder
+from model.get_encoder import build_encoder
+from model.base_model import SegmentationModel
+from model.lib import SynchronizedBatchNorm2d
 BatchNorm2d = SynchronizedBatchNorm2d
 
 
@@ -90,7 +92,7 @@ class Unet(SegmentationModel):
                 nn.AdaptiveAvgPool2d(1),
                 Flatten(),
                 nn.Dropout(p=0.2, inplace=True),
-                nn.Linear(self.encoder_channels[-1], classes, bias=True)
+                nn.Linear(self.encoder_channels[-1], classes - 1, bias=True)
             )
         else:
             self.classification_head = None
@@ -100,16 +102,30 @@ class Unet(SegmentationModel):
 
 
 
+
+def unet(model_name,**kwargs):
+    params = MODEL_CONFIG[model_name]
+    dynamic_params = kwargs
+    for key in dynamic_params:
+        if key in params:
+            params[key] = dynamic_params[key]
+
+    net = Unet(**params)
+    return net
+
+
+
+
 if __name__ == '__main__':
 
     from torchsummary import summary
     import torch
-    from config import MODEL_CONFIG
     import os 
     os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-    # net = Unet(**MODEL_CONFIG['unet'])
-    # net = Unet(**MODEL_CONFIG['swin_trans_unet'])
-    net = Unet(**MODEL_CONFIG['resnet18_unet'])
+
+    # net = unet('resnet18_unet',in_channels=1,classes=2)
+    net = unet('unet',in_channels=1,classes=2)
+    # net = unet('swin_trans_unet',in_channels=1,classes=2)
 
       
     summary(net.cuda(),input_size=(1,512,512),batch_size=1,device='cuda')

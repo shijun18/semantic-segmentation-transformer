@@ -19,6 +19,8 @@ from torch.cuda.amp import autocast as autocast
 import torch.distributed as dist
 from torch.cuda.amp import GradScaler
 from tqdm import tqdm
+import warnings
+warnings.filterwarnings('ignore')
 # GPU version.
 
 
@@ -291,7 +293,7 @@ class SemanticSeg(object):
 
         from metrics import RunningDice
         run_dice = RunningDice(labels=[0,1],ignore_label=-1)
-        for step, sample in tqdm(enumerate(train_loader)):
+        for step, sample in enumerate(train_loader):
 
             data = sample['image']
             target = sample['mask']
@@ -851,7 +853,7 @@ def compute_dice(predict,target,ignore_index=0):
             dice = binary_dice((onehot_predict==i).float(), (onehot_target==i).float())
             total_dice += dice
             dice_list.append(round(dice.item(),4))
-    print(dice_list)
+    # print(dice_list)
 
     if ignore_index is not None:
         return total_dice/(target.shape[1] - 1)

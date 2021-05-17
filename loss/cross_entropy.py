@@ -33,7 +33,7 @@ class TopKLoss(CrossentropyLoss):
 
     def __init__(self, weight=None, ignore_index=-100, k=10, reduction=None):
         self.k = k
-        super(TopKLoss, self).__init__(weight, False, ignore_index, reduction='none')
+        super(TopKLoss, self).__init__(weight, False, ignore_index, False, reduction='none')
 
     def forward(self, inp, target):
         # target = target[:, 0].long()
@@ -50,7 +50,7 @@ class DynamicTopKLoss(CrossentropyLoss):
         self.step = 0
         self.min_k = min_k
         self.step_threshold = step_threshold
-        super(DynamicTopKLoss, self).__init__(weight, False, ignore_index, reduction='none')
+        super(DynamicTopKLoss, self).__init__(weight, False, ignore_index, False, reduction='none')
         
     def forward(self, inp, target):
         # target = target[:, 0].long()

@@ -46,7 +46,7 @@ def get_cross_validation_by_specificed(path_list, val_sample=None):
 def get_cross_validation_by_sample(path_list, fold_num, current_fold):
 
     sample_list = list(set([os.path.basename(case).split('_')[0] for case in path_list]))
-    # print(len(sample_list))
+    print('sample len:',len(sample_list))
     sample_list.sort()        
     _len_ = len(sample_list) // fold_num
 
@@ -72,8 +72,8 @@ def get_cross_validation_by_sample(path_list, fold_num, current_fold):
 
     random.shuffle(train_path)
     random.shuffle(validation_path)
-    print("Train set length ", len(train_path),
-          "Val set length", len(validation_path))
+    print("Train set length:", len(train_path),
+          "\nVal set length:", len(validation_path))
     return train_path, validation_path
 
 def get_cross_validation(path_list, fold_num, current_fold):

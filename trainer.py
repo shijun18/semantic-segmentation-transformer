@@ -84,7 +84,6 @@ class SemanticSeg(object):
         self.batch_size = batch_size
         self.num_workers = num_workers
         self.device = device
-        self.net = self._get_net(self.net_name)
         self.pre_trained = pre_trained
         self.ex_pre_trained = ex_pre_trained 
         self.ckpt_point = ckpt_point
@@ -107,12 +106,16 @@ class SemanticSeg(object):
 
         os.environ['CUDA_VISIBLE_DEVICES'] = self.device
 
+        self.net = self._get_net(self.net_name)
+
         if self.pre_trained:
             self._get_pre_trained(self.weight_path,ckpt_point)
 
 
         if self.roi_number is not None:
             assert self.num_classes == 2, "num_classes must be set to 2 for binary segmentation"
+        
+        
 
     def trainer(self,
                 train_path,

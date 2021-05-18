@@ -27,9 +27,9 @@ json_path = {
     
 DISEASE = 'Cervical' 
 MODE = 'seg'
-NET_NAME = 'swin_trans_unet'
-ENCODER_NAME = None
-VERSION = 'v5.0'
+NET_NAME = 'unet'
+ENCODER_NAME = 'resnet18'
+VERSION = 'v1.1'
 
 with open(json_path[DISEASE], 'r') as fp:
     info = json.load(fp)

@@ -28,13 +28,13 @@ json_path = {
 DISEASE = 'Cervical' 
 MODE = 'seg'
 NET_NAME = 'unet'
-ENCODER_NAME = 'resnet18'
-VERSION = 'v1.1'
+ENCODER_NAME = None
+VERSION = 'v1.0-all'
 
 with open(json_path[DISEASE], 'r') as fp:
     info = json.load(fp)
 
-DEVICE = '7'
+DEVICE = '3'
 # True if use internal pre-trained model
 # Must be True when pre-training and inference
 PRE_TRAINED = False
@@ -61,11 +61,11 @@ SCALE = info['scale'][ROI_NAME]
 
 #--------------------------------- mode and data path setting
 #all
-# PATH_LIST = glob.glob(os.path.join(info['2d_data']['save_path'],'*.hdf5'))
+PATH_LIST = glob.glob(os.path.join(info['2d_data']['save_path'],'*.hdf5'))
 # PATH_LIST.extend(glob.glob(os.path.join('/staff/shijun/dataset/Med_Seg/EGFR/2d_data','*.hdf5')))
 # PATH_LIST.extend(glob.glob(os.path.join('/staff/shijun/dataset/Med_Seg/Covid-Seg/2d_data','*.hdf5')))
 #zero
-PATH_LIST = get_path_with_annotation(info['2d_data']['csv_path'],'path',ROI_NAME)
+# PATH_LIST = get_path_with_annotation(info['2d_data']['csv_path'],'path',ROI_NAME)
 # PATH_LIST.extend(get_path_with_annotation('/staff/shijun/torch_projects/Med_Seg/converter/nii_converter/static_files/covid-seg.csv','path','Lesion'))
 # PATH_LIST.extend(get_path_with_annotation('/staff/shijun/torch_projects/Med_Seg/converter/dcm_converter/static_files/egfr.csv','path',ROI_NAME,))
 #half
@@ -77,7 +77,7 @@ PATH_LIST = get_path_with_annotation(info['2d_data']['csv_path'],'path',ROI_NAME
 
 #--------------------------------- others
 INPUT_SHAPE = (512,512)
-BATCH_SIZE = 16
+BATCH_SIZE = 32
 
 CKPT_PATH = './ckpt/{}/{}/{}/{}/fold{}'.format(DISEASE,MODE,VERSION,ROI_NAME,str(CURRENT_FOLD))
 

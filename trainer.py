@@ -378,9 +378,9 @@ class SemanticSeg(object):
             val_transformer = transforms.Compose([
                 Trunc_and_Normalize(self.scale),
                 CropResize(dim=self.input_shape,num_class=self.num_classes,crop=self.crop),
-                # RandomErase2D(scale_flag=False),
-                # RandomRotate2D(),
-                # RandomFlip2D(mode='hv'),
+                RandomErase2D(scale_flag=False),
+                RandomRotate2D(),
+                RandomFlip2D(mode='hv'),
                 To_Tensor(num_class=self.num_classes)
             ])
         else:

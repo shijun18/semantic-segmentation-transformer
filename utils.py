@@ -66,7 +66,7 @@ def get_weight_path(ckpt_path):
     
     
 
-def remove_weight_path(ckpt_path,retain=5):
+def remove_weight_path(ckpt_path,retain=10):
 
     if os.path.isdir(ckpt_path):
         pth_list = os.listdir(ckpt_path)

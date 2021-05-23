@@ -118,15 +118,15 @@ class WindowAttention(nn.Module):
         """
         B_, N, C = x.shape
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
-        q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
+        q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple) B_,nH,N,C//nH
 
         q = q * self.scale
-        attn = (q @ k.transpose(-2, -1))
+        attn = (q @ k.transpose(-2, -1)) #B_,nH,N,C//nH @ B_,nH,C//nH,N -> B_,nH,N,N
 
         relative_position_bias = self.relative_position_bias_table[self.relative_position_index.view(-1)].view(
             self.window_size[0] * self.window_size[1], self.window_size[0] * self.window_size[1], -1)  # Wh*Ww,Wh*Ww,nH
-        relative_position_bias = relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww
-        attn = attn + relative_position_bias.unsqueeze(0)
+        relative_position_bias = relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww = nH,N,N
+        attn = attn + relative_position_bias.unsqueeze(0) #B_,nH,N,N
 
         if mask is not None:
             nW = mask.shape[0]
@@ -138,7 +138,7 @@ class WindowAttention(nn.Module):
 
         attn = self.attn_drop(attn)
 
-        x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
+        x = (attn @ v).transpose(1, 2).reshape(B_, N, C)  # B_,nH,N,N @ B_,nH,N,C//nH -> B_,nH,N,C//nH  -> B_,N,C
         x = self.proj(x)
         x = self.proj_drop(x)
         return x
@@ -369,8 +369,8 @@ class BasicLayer(nn.Module):
                 cnt += 1
 
         mask_windows = window_partition(img_mask, self.window_size)  # nW, window_size, window_size, 1
-        mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
-        attn_mask = mask_windows.unsqueeze(1) - mask_windows.unsqueeze(2)
+        mask_windows = mask_windows.view(-1, self.window_size * self.window_size) # nW, window_size*window_size
+        attn_mask = mask_windows.unsqueeze(1) - mask_windows.unsqueeze(2) # nW, window_size*window_size, window_size*window_size
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
 
         for blk in self.blocks:
@@ -422,9 +422,9 @@ class PatchEmbed(nn.Module):
         x = self.proj(x)  # B C Wh Ww
         if self.norm is not None:
             Wh, Ww = x.size(2), x.size(3)
-            x = x.flatten(2).transpose(1, 2)
+            x = x.flatten(2).transpose(1, 2) #B C Wh*Ww -> B Wh*Ww C = B Wh*Ww embed_dim
             x = self.norm(x)
-            x = x.transpose(1, 2).view(-1, self.embed_dim, Wh, Ww)
+            x = x.transpose(1, 2).view(-1, self.embed_dim, Wh, Ww) # B C Wh Ww
 
         return x
 
@@ -564,7 +564,7 @@ class SwinTransformer(nn.Module):
 
     def forward(self, x):
         """Forward function."""
-        x = self.patch_embed(x)
+        x = self.patch_embed(x) # B C Wh Ww
 
         Wh, Ww = x.size(2), x.size(3)
         if self.ape:

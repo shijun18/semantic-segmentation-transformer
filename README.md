@@ -1,2 +1,2 @@
 # semantic-segmentation-transformer
-Tranrformer for Semantic Segmentation of Medical Images
+Transformer for Semantic Segmentation of Medical Images
